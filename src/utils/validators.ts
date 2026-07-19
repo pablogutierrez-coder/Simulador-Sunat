@@ -1,4 +1,5 @@
 import type { TipoDocumento } from '../types'
+import { addDays, dateToIso } from './format'
 
 export interface ValidationResult {
   valid: boolean
@@ -18,12 +19,32 @@ export const validateDocument = (
 ): ValidationResult => {
   const clean = numero.trim()
 
+  if (tipoDocumento === 'SELECCIONE EL TIPO DE DOCUMENTO') {
+    return { valid: false, message: 'Seleccione el tipo de documento.' }
+  }
+
+  if (tipoDocumento === 'SIN DOCUMENTO') {
+    return { valid: true }
+  }
+
   if (tipoDocumento === 'DNI' && !/^\d{8}$/.test(clean)) {
     return { valid: false, message: 'El DNI debe tener 8 digitos numericos.' }
   }
 
   if (tipoDocumento === 'RUC' && !/^\d{11}$/.test(clean)) {
     return { valid: false, message: 'El RUC debe tener 11 digitos numericos.' }
+  }
+
+  if (
+    ['CARNET DE EXTRANJERIA', 'PASAPORTE', 'CED. DIPLOMATICA DE IDENTIDAD'].includes(
+      tipoDocumento,
+    ) &&
+    !/^[a-zA-Z0-9-]{4,15}$/.test(clean)
+  ) {
+    return {
+      valid: false,
+      message: 'El documento debe tener entre 4 y 15 caracteres alfanumericos.',
+    }
   }
 
   return { valid: true }
@@ -43,6 +64,26 @@ export const validateDate = (value: string): ValidationResult => {
 
   if (Number.isNaN(Date.parse(value))) {
     return { valid: false, message: 'La fecha ingresada no es valida.' }
+  }
+
+  return { valid: true }
+}
+
+export const validateEmissionDateRange = (value: string): ValidationResult => {
+  const basic = validateDate(value)
+  if (!basic.valid) {
+    return basic
+  }
+
+  const today = new Date()
+  const max = dateToIso(today)
+  const min = dateToIso(addDays(today, -2))
+
+  if (value < min || value > max) {
+    return {
+      valid: false,
+      message: 'La fecha de emision solo puede ser la fecha actual o hasta dos dias antes.',
+    }
   }
 
   return { valid: true }

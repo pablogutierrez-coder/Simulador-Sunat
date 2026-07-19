@@ -23,7 +23,7 @@ export function ConfirmacionPage() {
           local.
         </div>
         <div className={styles.formActions}>
-          <button className={styles.secondaryButton} type="button" onClick={() => navigate('/emitir/pago')}>
+          <button className={styles.secondaryButton} type="button" onClick={() => navigate('/emitir/servicio')}>
             Anterior
           </button>
           <button className={styles.primaryButton} type="button" onClick={() => navigate('/emitir/vista-previa')}>

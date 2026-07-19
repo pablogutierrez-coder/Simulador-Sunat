@@ -8,13 +8,31 @@ export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  const [ruc, setRuc] = useState('10456789123')
+  const [ruc, setRuc] = useState('10700932066')
   const [usuario, setUsuario] = useState('ADMIN')
   const [clave, setClave] = useState('123456')
   const [error, setError] = useState('')
+  const [captchaState, setCaptchaState] = useState<'idle' | 'loading' | 'checked'>('idle')
+
+  const handleCaptchaClick = () => {
+    if (captchaState !== 'idle') {
+      return
+    }
+
+    setCaptchaState('loading')
+    window.setTimeout(() => {
+      setCaptchaState('checked')
+      setError('')
+    }, 650)
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (captchaState !== 'checked') {
+      setError('Debe marcar la casilla de seguridad para iniciar sesion.')
+      return
+    }
+
     const ok = login(ruc, usuario, clave)
     if (!ok) {
       setError('Los datos ingresados no corresponden a un usuario de practica.')
@@ -77,11 +95,15 @@ export function LoginPage() {
               <a className={styles.forgotLink}>¿Te olvidaste tu usuario o clave?</a>
             </div>
             <div className={styles.captchaLabel}>Marque la casilla de seguridad:</div>
-            <div className={styles.fakeCaptcha}>
+            <button
+              className={`${styles.fakeCaptcha} ${styles[`captcha${captchaState}`] ?? ''}`}
+              type="button"
+              onClick={handleCaptchaClick}
+            >
               <span className={styles.captchaBox}></span>
               <strong>No soy un robot</strong>
               <small>reCAPTCHA simulado</small>
-            </div>
+            </button>
             {error ? <div className={styles.alert}>{error}</div> : null}
             <button className={styles.primaryButton} type="submit">
               Iniciar Sesión

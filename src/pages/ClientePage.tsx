@@ -6,11 +6,21 @@ import type { Cliente, FormaPago, TipoDocumento } from '../types'
 import { validateDocument, validateRequired } from '../utils/validators'
 import styles from '../App.module.css'
 
+const documentTypes: TipoDocumento[] = [
+  'SELECCIONE EL TIPO DE DOCUMENTO',
+  'SIN DOCUMENTO',
+  'DNI',
+  'CARNET DE EXTRANJERIA',
+  'RUC',
+  'PASAPORTE',
+  'CED. DIPLOMATICA DE IDENTIDAD',
+]
+
 export function ClientePage() {
   const navigate = useNavigate()
   const { draft, setCliente, setFormaPago } = useReceipts()
   const [tipoDocumento, setTipoDocumento] = useState<TipoDocumento>(
-    draft.cliente?.tipoDocumento ?? 'RUC',
+    draft.cliente?.tipoDocumento ?? 'SELECCIONE EL TIPO DE DOCUMENTO',
   )
   const [formaPago, setLocalFormaPago] = useState<FormaPago>(draft.formaPago ?? 'CONTADO')
   const [numero, setNumero] = useState(draft.cliente?.numero ?? '')
@@ -19,15 +29,40 @@ export function ClientePage() {
   const [error, setError] = useState('')
 
   const foundClient = useMemo(
-    () => clientes.find((cliente) => cliente.tipoDocumento === tipoDocumento && cliente.numero === numero),
+    () =>
+      clientes.find(
+        (cliente) => cliente.tipoDocumento === tipoDocumento && cliente.numero === numero,
+      ),
     [numero, tipoDocumento],
   )
 
+  const resetClientData = () => {
+    setNumero('')
+    setRazonSocial('')
+    setDireccion('')
+    setError('')
+  }
+
   const fillClient = () => {
+    const documentValidation = validateDocument(tipoDocumento, numero)
+
+    if (!documentValidation.valid) {
+      setError(documentValidation.message ?? '')
+      return
+    }
+
+    if (tipoDocumento === 'SIN DOCUMENTO') {
+      setRazonSocial('USUARIO SIN DOCUMENTO')
+      setDireccion('-')
+      setError('')
+      return
+    }
+
     if (!foundClient) {
       setError('No existe un cliente ficticio con ese documento. Puede registrar uno nuevo.')
       return
     }
+
     setRazonSocial(foundClient.razonSocial)
     setDireccion(foundClient.direccion ?? '')
     setError('')
@@ -36,7 +71,7 @@ export function ClientePage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const documentValidation = validateDocument(tipoDocumento, numero)
-    const nameValidation = validateRequired(razonSocial, 'Razon social / nombres')
+    const nameValidation = validateRequired(razonSocial, 'Razón social / nombres')
 
     if (!documentValidation.valid || !nameValidation.valid) {
       setError(documentValidation.message ?? nameValidation.message ?? '')
@@ -46,7 +81,7 @@ export function ClientePage() {
     const cliente: Cliente = {
       id: foundClient?.id ?? Date.now(),
       tipoDocumento,
-      numero: numero.trim(),
+      numero: tipoDocumento === 'SIN DOCUMENTO' ? '-' : numero.trim(),
       razonSocial: razonSocial.trim(),
       direccion: direccion.trim(),
     }
@@ -84,28 +119,45 @@ export function ClientePage() {
 
         <section className={styles.sunatBox}>
           <div className={styles.sunatBoxHeader}>
-            Emisión del Recibo por Honorarios Electronico indique los datos del usuario al que
-            le presto el servicio:
+            Emisión del Recibo por Honorarios Electrónico indique los datos del usuario al que
+            le prestó el servicio:
           </div>
           <div className={styles.sunatBody}>
             <select
               className={styles.fullControl}
               value={tipoDocumento}
-              onChange={(event) => setTipoDocumento(event.target.value as TipoDocumento)}
+              onChange={(event) => {
+                setTipoDocumento(event.target.value as TipoDocumento)
+                resetClientData()
+              }}
             >
-              <option value="RUC">RUC</option>
-              <option value="DNI">DNI</option>
+              {documentTypes.map((documentType) => (
+                <option key={documentType} value={documentType}>
+                  {documentType}
+                </option>
+              ))}
             </select>
             <input
               className={styles.fullControl}
-              value={numero}
-              maxLength={tipoDocumento === 'RUC' ? 11 : 8}
+              disabled={tipoDocumento === 'SIN DOCUMENTO'}
+              maxLength={tipoDocumento === 'RUC' ? 11 : tipoDocumento === 'DNI' ? 8 : 15}
               placeholder="NÚMERO DOCUMENTO DE IDENTIDAD DEL USUARIO"
-              onChange={(event) => setNumero(event.target.value.replace(/\D/g, ''))}
+              value={numero}
+              onChange={(event) =>
+                setNumero(
+                  ['RUC', 'DNI'].includes(tipoDocumento)
+                    ? event.target.value.replace(/\D/g, '')
+                    : event.target.value.toUpperCase(),
+                )
+              }
             />
             {razonSocial ? (
               <>
-                <input className={styles.fullControlMuted} readOnly value={numero} />
+                <input
+                  className={styles.fullControlMuted}
+                  readOnly
+                  value={tipoDocumento === 'SIN DOCUMENTO' ? '-' : numero}
+                />
                 <input className={styles.fullControlMuted} readOnly value={razonSocial} />
                 <input className={styles.fullControlMuted} readOnly value={direccion} />
               </>

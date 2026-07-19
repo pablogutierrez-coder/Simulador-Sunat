@@ -7,7 +7,7 @@ export const recibos: Recibo[] = [
     serie: 'E001',
     numero: '00000001',
     fechaEmision: '2026-07-15',
-    usuarioRuc: '10456789123',
+    usuarioRuc: '10700932066',
     cliente: clientes[0],
     servicio: {
       descripcion: 'Asesoria contable mensual',

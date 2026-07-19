@@ -1,4 +1,11 @@
-export type TipoDocumento = 'RUC' | 'DNI'
+export type TipoDocumento =
+  | 'SELECCIONE EL TIPO DE DOCUMENTO'
+  | 'SIN DOCUMENTO'
+  | 'DNI'
+  | 'CARNET DE EXTRANJERIA'
+  | 'RUC'
+  | 'PASAPORTE'
+  | 'CED. DIPLOMATICA DE IDENTIDAD'
 
 export type FormaPago = 'CONTADO' | 'CREDITO'
 

@@ -52,6 +52,11 @@
   color: #fff;
   text-align: center;
   box-shadow: inset 0 -3px 0 rgb(0 0 0 / 10%);
+  transition: opacity 120ms ease;
+}
+
+.solTile:hover {
+  opacity: 0.9;
 }
 
 .solTile svg {
@@ -252,9 +257,20 @@
   font-weight: 400;
 }
 
+.sunatFormRows input[type="radio"],
+.sunatBodyInline input[type="radio"],
+.radioList input[type="radio"] {
+  width: 13px;
+  height: 13px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid #999;
+  box-shadow: none;
+}
+
 .fullControl,
 .fullControlMuted,
-.sunatFormRows input,
+.sunatFormRows input:not([type="radio"]),
 .sunatFormRows select,
 .sunatFormRows textarea {
   width: 100%;
@@ -272,7 +288,7 @@
 }
 
 .fullControl:focus,
-.sunatFormRows input:focus,
+.sunatFormRows input:not([type="radio"]):focus,
 .sunatFormRows select:focus,
 .sunatFormRows textarea:focus {
   border-color: #66afe9;
@@ -282,6 +298,40 @@
 
 .fullControlMuted {
   background: #eee;
+}
+
+.sunatFormRows input[readonly] {
+  background: #eee;
+  color: #4d5968;
+}
+
+.dateField {
+  width: 100%;
+  min-height: 29px;
+  display: grid;
+  grid-template-columns: 1fr 29px;
+  align-items: center;
+  padding: 0;
+  border: 1px solid #cfd7dc;
+  border-radius: 3px;
+  background: #eee;
+  color: #333;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dateField span:first-child {
+  padding: 5px 9px;
+}
+
+.calendarIcon {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-left: 1px solid #d5d5d5;
+  color: #555;
+  font-size: 12px;
 }
 
 .sunatActions {
@@ -388,7 +438,13 @@
 .radioLine {
   grid-column: 1 / -1;
   display: flex;
+  align-items: center;
   gap: 14px;
+}
+
+.sunatFormRows .radioLine label {
+  display: inline-flex !important;
+  width: auto;
 }
 
 .amountSummary {
@@ -541,6 +597,9 @@
   padding: 9px;
   border: 1px solid #d5d5d5;
   background: #fafafa;
+  color: #222;
+  cursor: pointer;
+  text-align: left;
 }
 
 .captchaBox {
@@ -548,6 +607,37 @@
   height: 23px;
   border: 2px solid #777;
   background: #fff;
+}
+
+.captchaloading .captchaBox {
+  border-color: #347daf;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+.captchachecked .captchaBox {
+  position: relative;
+  border-color: transparent;
+  background: transparent;
+}
+
+.captchachecked .captchaBox::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: -2px;
+  width: 11px;
+  height: 22px;
+  border: solid #20a25b;
+  border-width: 0 4px 4px 0;
+  transform: rotate(45deg);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .fakeCaptcha strong {
@@ -760,6 +850,194 @@
   color: #9c2429;
   text-align: center;
   font-weight: 700;
+}
+
+.previewTitle {
+  margin: 0 0 26px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ddd;
+  color: #1f2e3d;
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.preliminaryBox {
+  position: relative;
+  min-height: 720px;
+  padding: 34px 18px 42px;
+  border: 1px solid #2f9ee6;
+  background: #fff;
+  color: #152637;
+  font-size: 18px;
+}
+
+.issuerBlock {
+  width: 54%;
+}
+
+.issuerBlock h2 {
+  margin: 0 0 28px;
+  color: #152637;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.issuerBlock p,
+.preliminaryDetails p {
+  margin: 0 0 18px;
+  line-height: 1.25;
+}
+
+.preliminaryDocumentBox {
+  position: absolute;
+  top: 20px;
+  right: 78px;
+  width: 475px;
+  min-height: 112px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  border: 3px solid #74c1f3;
+  text-align: center;
+}
+
+.preliminaryDocumentBox p,
+.preliminaryDocumentBox strong,
+.preliminaryDocumentBox span {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.preliminaryDocumentBox span {
+  color: #a3262c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.preliminaryDetails {
+  margin-top: 44px;
+  max-width: 980px;
+}
+
+.preliminaryDetails strong {
+  color: #1d2730;
+}
+
+.preliminaryTotals {
+  width: 370px;
+  display: grid;
+  gap: 24px;
+  margin: 58px auto 0;
+  color: #1d2730;
+}
+
+.preliminaryTotals div {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 20px;
+}
+
+.preliminaryTotals strong,
+.preliminaryTotals span {
+  font-size: 18px;
+}
+
+.dateModalOverlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 46%);
+  z-index: 20;
+}
+
+.dateModal {
+  width: 700px;
+  max-width: calc(100vw - 40px);
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 35%);
+  overflow: hidden;
+}
+
+.dateModalTitle {
+  padding: 20px 18px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+  font-size: 20px;
+}
+
+.dateCalendar {
+  display: grid;
+  justify-content: center;
+  gap: 14px;
+  padding: 30px 0 26px;
+  text-align: center;
+}
+
+.dateCalendar > strong {
+  color: #333;
+  font-size: 16px;
+}
+
+.weekHeader,
+.dayGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 35px);
+  gap: 0;
+}
+
+.weekHeader span {
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dayButton {
+  width: 35px;
+  height: 35px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.outMonth,
+.disabledDay {
+  color: #b8b8b8;
+  font-weight: 400;
+  cursor: default;
+}
+
+.disabledDay:hover {
+  background: transparent;
+}
+
+.selectedDay {
+  background: #ffc95f;
+  color: #111;
+}
+
+.dayButton:not(.disabledDay):hover {
+  background: #ffd37a;
+}
+
+.dateModalActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 18px;
+  border-top: 1px solid #eee;
+}
+
+.dateModalActions .redButton {
+  min-height: 39px;
+  padding: 8px 15px;
+  font-size: 16px;
 }
 
 @media (max-width: 980px) {

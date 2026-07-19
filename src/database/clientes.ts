@@ -27,6 +27,6 @@ export const clientes: Cliente[] = [
     tipoDocumento: 'RUC',
     numero: '20601260779',
     razonSocial: 'AESUR S.A.C.',
-    direccion: 'LIMA',
+    direccion: 'CAL. INCA GARCILASO DE LA VEGA NRO. 211 URB. MAGISTERIAL AREQUIPA AREQUIPA AREQUIPA',
   },
 ]
