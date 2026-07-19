@@ -1,32 +1,46 @@
-# React + TypeScript + Vite
+# Simulador SUNAT RHE
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Simulador educativo frontend del flujo de emision de Recibos por Honorarios Electronicos (RHE). La aplicacion replica el proceso para capacitacion y practica local, sin conectarse a SUNAT ni a servicios externos.
 
-Currently, two official plugins are available:
+## Aviso
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Este proyecto es una plataforma de aprendizaje. No pertenece a SUNAT, no consume APIs oficiales, no genera comprobantes electronicos validos y toda la informacion mostrada es ficticia.
 
-## React Compiler
+## Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- Vite
+- TypeScript
+- React Router
+- Context API
+- LocalStorage
+- jsPDF
 
-## Expanding the Oxlint configuration
+## Credenciales de prueba
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- RUC: `10700932066`
+- Usuario: `ADMIN`
+- Clave: `123456`
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Instalacion local
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Para revisar una compilacion de produccion:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Estructura principal
+
+- `src/database`: datos ficticios embebidos como arreglos TypeScript.
+- `src/pages`: pantallas del flujo RHE.
+- `src/components`: componentes reutilizables.
+- `src/context`: estado global de autenticacion y recibos.
+- `src/services`: persistencia local y generacion de PDF.
+- `src/utils`: validaciones y formato.
