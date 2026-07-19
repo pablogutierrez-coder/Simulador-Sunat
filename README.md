@@ -36,6 +36,14 @@ npm run build
 npm run preview
 ```
 
+## Railway
+
+El repositorio incluye `railway.json`.
+
+- Build command: `npm run build`
+- Start command: `npm run start`
+- Puerto: Railway lo inyecta mediante la variable `PORT`.
+
 ## Estructura principal
 
 - `src/database`: datos ficticios embebidos como arreglos TypeScript.
