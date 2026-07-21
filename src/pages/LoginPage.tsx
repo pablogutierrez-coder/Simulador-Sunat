@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Footer } from '../components/AppLayout'
 import { useAuth } from '../hooks/useAuth'
@@ -13,6 +13,15 @@ export function LoginPage() {
   const [clave, setClave] = useState('123456')
   const [error, setError] = useState('')
   const [captchaState, setCaptchaState] = useState<'idle' | 'loading' | 'checked'>('idle')
+  const loginLock = useRef(false)
+
+  const isEmbedded = () => {
+    try {
+      return window.self !== window.top
+    } catch {
+      return true
+    }
+  }
 
   const handleCaptchaClick = () => {
     if (captchaState !== 'idle') {
@@ -23,20 +32,31 @@ export function LoginPage() {
     window.setTimeout(() => {
       setCaptchaState('checked')
       setError('')
+      if (isEmbedded()) {
+        window.setTimeout(() => handleLogin(true), 250)
+      }
     }, 650)
   }
 
-  const handleLogin = () => {
-    if (captchaState !== 'checked') {
+  const handleLogin = (captchaAlreadyChecked = false) => {
+    if (loginLock.current) {
+      return
+    }
+
+    if (!captchaAlreadyChecked && captchaState !== 'checked') {
       setError('Debe marcar la casilla de seguridad para iniciar sesion.')
       return
     }
 
+    loginLock.current = true
+
     const ok = login(ruc, usuario, clave)
     if (!ok) {
+      loginLock.current = false
       setError('Los datos ingresados no corresponden a un usuario de practica.')
       return
     }
+
     const from = (location.state as { from?: string } | null)?.from ?? '/'
     navigate(from)
     window.setTimeout(() => {
@@ -107,7 +127,12 @@ export function LoginPage() {
               <small>reCAPTCHA simulado</small>
             </button>
             {error ? <div className={styles.alert}>{error}</div> : null}
-            <button className={styles.primaryButton} type="button" onClick={handleLogin}>
+            <button
+              className={styles.primaryButton}
+              type="button"
+              onClick={() => handleLogin()}
+              onPointerUp={() => handleLogin()}
+            >
               Iniciar Sesión
             </button>
           </form>

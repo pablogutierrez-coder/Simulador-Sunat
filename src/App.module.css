@@ -609,6 +609,10 @@
   background: #fff;
 }
 
+.fakeCaptcha * {
+  pointer-events: none;
+}
+
 .captchaloading .captchaBox {
   border-color: #347daf;
   border-top-color: transparent;
@@ -658,6 +662,7 @@
   justify-self: center;
   min-height: 33px;
   font-size: 13px;
+  touch-action: manipulation;
 }
 
 .loginHelp {
