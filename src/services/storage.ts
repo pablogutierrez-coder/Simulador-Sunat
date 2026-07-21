@@ -4,7 +4,14 @@ import { recibos as seedRecibos } from '../database/recibos'
 const RECEIPTS_KEY = 'rhe-simulador.recibos'
 
 export const loadRecibos = (): Recibo[] => {
-  const stored = window.localStorage.getItem(RECEIPTS_KEY)
+  let stored: string | null = null
+
+  try {
+    stored = window.localStorage.getItem(RECEIPTS_KEY)
+  } catch {
+    return seedRecibos
+  }
+
   if (!stored) {
     return seedRecibos
   }
@@ -18,9 +25,17 @@ export const loadRecibos = (): Recibo[] => {
 }
 
 export const saveRecibos = (items: Recibo[]): void => {
-  window.localStorage.setItem(RECEIPTS_KEY, JSON.stringify(items))
+  try {
+    window.localStorage.setItem(RECEIPTS_KEY, JSON.stringify(items))
+  } catch {
+    // In embedded lessons, storage can be blocked. The in-memory React state still works.
+  }
 }
 
 export const clearRecibos = (): void => {
-  window.localStorage.removeItem(RECEIPTS_KEY)
+  try {
+    window.localStorage.removeItem(RECEIPTS_KEY)
+  } catch {
+    // Ignore storage failures in restricted iframe contexts.
+  }
 }

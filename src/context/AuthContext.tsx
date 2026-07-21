@@ -12,7 +12,14 @@ export interface AuthContextValue {
 const AUTH_KEY = 'rhe-simulador.usuario'
 
 const loadUser = (): Usuario | null => {
-  const stored = window.localStorage.getItem(AUTH_KEY)
+  let stored: string | null = null
+
+  try {
+    stored = window.localStorage.getItem(AUTH_KEY)
+  } catch {
+    stored = null
+  }
+
   if (!stored) {
     return null
   }
@@ -35,13 +42,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false
     }
 
-    window.localStorage.setItem(AUTH_KEY, String(found.id))
+    try {
+      window.localStorage.setItem(AUTH_KEY, String(found.id))
+    } catch {
+      // Some embedded contexts block third-party storage. Keep the session in memory.
+    }
+
     setCurrentUser(found)
     return true
   }, [])
 
   const logout = useCallback(() => {
-    window.localStorage.removeItem(AUTH_KEY)
+    try {
+      window.localStorage.removeItem(AUTH_KEY)
+    } catch {
+      // Storage may be unavailable inside restricted iframes.
+    }
+
     setCurrentUser(null)
   }, [])
 
