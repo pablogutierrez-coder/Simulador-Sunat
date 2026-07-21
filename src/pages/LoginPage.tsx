@@ -26,8 +26,7 @@ export function LoginPage() {
     }, 650)
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleLogin = () => {
     if (captchaState !== 'checked') {
       setError('Debe marcar la casilla de seguridad para iniciar sesion.')
       return
@@ -40,6 +39,9 @@ export function LoginPage() {
     }
     const from = (location.state as { from?: string } | null)?.from ?? '/'
     navigate(from)
+    window.setTimeout(() => {
+      window.location.hash = from === '/' ? '#/' : `#${from}`
+    }, 50)
   }
 
   return (
@@ -56,7 +58,7 @@ export function LoginPage() {
         <section className={styles.loginCard}>
           <div className={styles.loginBar}>Ingreso a SUNAT en Línea</div>
           <span className={styles.cornerBadge}>SIMULADOR EDUCATIVO</span>
-          <form className={styles.loginForm} onSubmit={handleSubmit}>
+          <form className={styles.loginForm} onSubmit={(event) => event.preventDefault()}>
             <div className={styles.lockArt}>
               <div className={styles.lockShackle}></div>
               <div className={styles.lockBody}>CLAVESOL</div>
@@ -105,7 +107,7 @@ export function LoginPage() {
               <small>reCAPTCHA simulado</small>
             </button>
             {error ? <div className={styles.alert}>{error}</div> : null}
-            <button className={styles.primaryButton} type="submit">
+            <button className={styles.primaryButton} type="button" onClick={handleLogin}>
               Iniciar Sesión
             </button>
           </form>
